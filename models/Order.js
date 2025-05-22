@@ -82,11 +82,11 @@ const orderSchema = new mongoose.Schema({
 });
 
 // Generate order number before saving
-orderSchema.pre('save', function(next) {
-  if (!this.orderNumber) {
-    this.orderNumber = 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
-  }
-  next();
+orderSchema.pre('validate', function(next) {
+if (!this.orderNumber) {
+this.orderNumber = 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+}
+next();
 });
 
 module.exports = mongoose.model('Order', orderSchema);
