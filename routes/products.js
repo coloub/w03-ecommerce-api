@@ -6,7 +6,7 @@ const {
   updateProduct,
   deleteProduct
 } = require('../controllers/productController');
-const { validateObjectId, validateProductData } = require('../middleware/validation');
+const { validateObjectId, validateProductData, validateProductUpdateData } = require('../middleware/validation');
 
 const router = express.Router();
 
@@ -19,8 +19,8 @@ router.get('/:id', validateObjectId, getProduct);
 // POST /api/products - Create new product
 router.post('/', validateProductData, createProduct);
 
-// PUT /api/products/:id - Update product
-router.put('/:id', validateObjectId, validateProductData, updateProduct);
+// PUT /api/products/:id - Update product (use partial update validation)
+router.put('/:id', validateObjectId, validateProductUpdateData, updateProduct);
 
 // DELETE /api/products/:id - Delete product
 router.delete('/:id', validateObjectId, deleteProduct);
