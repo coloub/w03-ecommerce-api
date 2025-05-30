@@ -237,10 +237,91 @@ const validateOrderUpdateData = (req, res, next) => {
   next();
 };
 
+// New validation for registration data
+const validateRegistrationData = (req, res, next) => {
+  const { name, email, password, role } = req.body;
+  const errors = [];
+
+  if (!name || typeof name !== 'string' || name.trim() === '') {
+    errors.push('Name is required and must be a non-empty string');
+  }
+
+  if (!email || typeof email !== 'string' || !/^\S+@\S+\.\S+$/.test(email)) {
+    errors.push('Valid email is required');
+  }
+
+  if (!password || typeof password !== 'string' || password.length < 6) {
+    errors.push('Password is required and must be at least 6 characters');
+  }
+
+  if (role !== undefined && !['user', 'admin'].includes(role)) {
+    errors.push('Role must be either "user" or "admin"');
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).json({
+      success: false,
+      message: 'Validation errors',
+      errors: errors
+    });
+  }
+
+  next();
+};
+
+// New validation for login data
+const validateLoginData = (req, res, next) => {
+  const { email, password } = req.body;
+  const errors = [];
+
+  if (!email || typeof email !== 'string' || !/^\S+@\S+\.\S+$/.test(email)) {
+    errors.push('Valid email is required');
+  }
+
+  if (!password || typeof password !== 'string' || password.length < 6) {
+    errors.push('Password is required and must be at least 6 characters');
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).json({
+      success: false,
+      message: 'Validation errors',
+      errors: errors
+    });
+  }
+
+  next();
+};
+
+// Middleware to validate resource ownership for orders
+const validateOrderOwnership = (req, res, next) => {
+  const user = req.user;
+  const orderUserId = req.orderUserId; // This should be set in controller after fetching order
+
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: 'Unauthorized'
+    });
+  }
+
+  if (user.role === 'admin' || user.id === orderUserId.toString()) {
+    return next();
+  }
+
+  return res.status(403).json({
+    success: false,
+    message: 'Forbidden: You do not have permission to access this resource'
+  });
+};
+
 module.exports = {
   validateObjectId,
   validateProductData,
   validateOrderData,
   validateProductUpdateData,
-  validateOrderUpdateData
+  validateOrderUpdateData,
+  validateRegistrationData,
+  validateLoginData,
+  validateOrderOwnership
 };

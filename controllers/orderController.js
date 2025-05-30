@@ -18,12 +18,19 @@ const getChanges = (oldObj, newObj) => {
 
 // @desc    Get all orders
 // @route   GET /api/orders
-// @access  Public
+// @access  Admin or user (users see only their own orders)
 const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find()
-      .populate('items.productId', 'name price')
-      .sort({ createdAt: -1 });
+    let orders;
+    if (req.user.role === 'admin') {
+      orders = await Order.find()
+        .populate('items.productId', 'name price')
+        .sort({ createdAt: -1 });
+    } else {
+      orders = await Order.find({ userId: req.user.id })
+        .populate('items.productId', 'name price')
+        .sort({ createdAt: -1 });
+    }
 
     res.status(200).json({
       success: true,
@@ -42,7 +49,7 @@ const getOrders = async (req, res) => {
 
 // @desc    Get single order
 // @route   GET /api/orders/:id
-// @access  Public
+// @access  Owner or admin
 const getOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
@@ -52,6 +59,13 @@ const getOrder = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: 'Order not found'
+      });
+    }
+
+    if (req.user.role !== 'admin' && order.userId.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden: You do not have permission to access this order'
       });
     }
 
@@ -71,9 +85,12 @@ const getOrder = async (req, res) => {
 
 // @desc    Create new order
 // @route   POST /api/orders
-// @access  Public
+// @access  Authenticated user
 const createOrder = async (req, res) => {
   try {
+    // Attach userId from authenticated user
+    req.body.userId = req.user.id;
+
     // Validate that all products exist and get their data
     const { items } = req.body;
     let totalAmount = 0;
@@ -134,7 +151,7 @@ const createOrder = async (req, res) => {
 
 // @desc    Update order (partial update with detailed response and auto-recalculation)
 // @route   PUT /api/orders/:id
-// @access  Public
+// @access  Owner or admin
 const updateOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id).populate('items.productId', 'name price category');
@@ -143,6 +160,13 @@ const updateOrder = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: 'Order not found'
+      });
+    }
+
+    if (req.user.role !== 'admin' && order.userId.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden: You do not have permission to update this order'
       });
     }
 
@@ -214,7 +238,7 @@ const updateOrder = async (req, res) => {
 
 // @desc    Delete order with summary before deletion
 // @route   DELETE /api/orders/:id
-// @access  Public
+// @access  Owner or admin
 const deleteOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
@@ -224,6 +248,13 @@ const deleteOrder = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: 'Order not found'
+      });
+    }
+
+    if (req.user.role !== 'admin' && order.userId.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden: You do not have permission to delete this order'
       });
     }
 
