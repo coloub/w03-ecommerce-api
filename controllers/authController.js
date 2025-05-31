@@ -9,9 +9,54 @@ const generateToken = (user) => {
   );
 };
 
+/**
+ * Register a new user.
+ * 
+ * Role-based registration:
+ * - If role is 'admin', an adminSecret must be provided and match the ADMIN_SECRET env variable.
+ * - If adminSecret is missing or incorrect, registration as admin is forbidden.
+ * - If role is 'user' or not provided, register as regular user.
+ * - Invalid roles are rejected.
+ * 
+ * The ADMIN_SECRET should be stored securely in environment variables.
+ * 
+ * Example usage in Insomnia:
+ * {
+ *   "name": "Admin User",
+ *   "email": "admin@example.com",
+ *   "password": "securepassword",
+ *   "role": "admin",
+ *   "adminSecret": "superadmin123"
+ * }
+ */
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, adminSecret } = req.body;
+
+    // Validate role input
+    const validRoles = ['user', 'admin'];
+    let assignedRole = 'user'; // default role
+
+    if (role) {
+      if (!validRoles.includes(role)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid role specified',
+          error: 'Role must be either "user" or "admin"'
+        });
+      }
+      if (role === 'admin') {
+        // Check adminSecret for admin registration
+        if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
+          return res.status(403).json({
+            success: false,
+            message: 'Access denied: invalid or missing admin secret',
+            error: 'Admin registration requires valid adminSecret'
+          });
+        }
+        assignedRole = 'admin';
+      }
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -23,7 +68,8 @@ exports.register = async (req, res) => {
       });
     }
 
-    const user = new User({ name, email, password, role });
+    // Create user with assigned role
+    const user = new User({ name, email, password, role: assignedRole });
     await user.save();
 
     const token = generateToken(user);

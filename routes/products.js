@@ -17,13 +17,22 @@ router.get('/', getProducts);
 // GET /api/products/:id - Get single product (public)
 router.get('/:id', validateObjectId, getProduct);
 
-// POST /api/products - Create new product (requires authentication)
-router.post('/', authenticateToken, validateProductData, createProduct);
+/**
+ * POST /api/products - Create new product
+ * Accessible by authenticated users with role 'admin' only
+ */
+router.post('/', authenticateToken, authorizeRoles('admin'), validateProductData, createProduct);
 
-// PUT /api/products/:id - Update product (requires authentication)
-router.put('/:id', authenticateToken, validateObjectId, validateProductUpdateData, updateProduct);
+/**
+ * PUT /api/products/:id - Update product
+ * Accessible by authenticated users with role 'admin' only
+ */
+router.put('/:id', authenticateToken, authorizeRoles('admin'), validateObjectId, validateProductUpdateData, updateProduct);
 
-// DELETE /api/products/:id - Delete product (admin only)
+/**
+ * DELETE /api/products/:id - Delete product
+ * Accessible by authenticated users with role 'admin' only
+ */
 router.delete('/:id', authenticateToken, authorizeRoles('admin'), validateObjectId, deleteProduct);
 
 module.exports = router;

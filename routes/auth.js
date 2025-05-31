@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
 const authController = require('../controllers/authController');
-const { authenticateToken } = require('../middleware/authMiddleware');
+const { authenticateToken, authorizeRoles } = require('../middleware/authMiddleware');
 
 // Rate limiter for auth routes to prevent brute force attacks
 const authLimiter = rateLimit({
@@ -21,6 +21,11 @@ router.post('/login', authLimiter, authController.login);
 // Protected routes
 router.post('/logout', authenticateToken, authController.logout);
 router.get('/profile', authenticateToken, authController.getProfile);
-router.get('/users', authenticateToken, authController.getAllUsers);
+
+/**
+ * GET /api/auth/users - Get all users
+ * Accessible by admin only
+ */
+router.get('/users', authenticateToken, authorizeRoles('admin'), authController.getAllUsers);
 
 module.exports = router;
