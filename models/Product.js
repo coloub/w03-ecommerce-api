@@ -27,6 +27,12 @@ const productSchema = new mongoose.Schema({
     required: [true, 'Brand is required'],
     trim: true
   },
+  sku: {
+    type: String,
+    unique: true,
+    sparse: true,
+    trim: true
+  },
   inStock: {
     type: Boolean,
     default: true

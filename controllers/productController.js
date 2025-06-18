@@ -66,11 +66,16 @@ const getProduct = async (req, res) => {
   }
 };
 
+const { v4: uuidv4 } = require('uuid');
+
 // @desc    Create new product
 // @route   POST /api/products
 // @access  Public
 const createProduct = async (req, res) => {
   try {
+    // Generate a unique SKU for the product
+    req.body.sku = uuidv4();
+
     const product = await Product.create(req.body);
 
     res.status(201).json({
@@ -215,10 +220,28 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+const getCategories = async (req, res) => {
+  try {
+    const categories = await Product.distinct('category');
+    res.status(200).json({
+      success: true,
+      data: categories
+    });
+  } catch (error) {
+    console.error('Error in getCategories:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server Error',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   getProducts,
   getProduct,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getCategories
 };

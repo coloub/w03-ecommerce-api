@@ -4,7 +4,8 @@ const {
   getProduct,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getCategories
 } = require('../controllers/productController');
 const { validateObjectId, validateProductData, validateProductUpdateData } = require('../middleware/validation');
 const { authenticateToken, authorizeRoles } = require('../middleware/authMiddleware');
@@ -42,6 +43,8 @@ const router = express.Router();
  *                     $ref: '#/components/schemas/Product'
  */
 router.get('/', getProducts);
+
+router.get('/categories', getCategories);
 
 /**
  * @swagger
