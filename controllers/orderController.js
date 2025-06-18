@@ -267,7 +267,7 @@ const deleteOrder = async (req, res) => {
       status: order.status
     };
 
-    await order.remove();
+    await order.deleteOne();
 
     res.status(200).json({
       success: true,
