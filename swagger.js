@@ -30,7 +30,11 @@ const options = {
             name: { type: 'string', example: 'Sample Product' },
             description: { type: 'string', example: 'A sample product description' },
             price: { type: 'number', example: 49.99 },
-            category: { type: 'string', example: 'Electronics' },
+            category: { 
+              type: 'string', 
+              example: 'Electronics',
+              enum: ['Electronics', 'Clothing', 'Books', 'Home', 'Sports', 'Other']
+            },
             brand: { type: 'string', example: 'SampleBrand' },
             inStock: { type: 'boolean', example: true },
             quantity: { type: 'number', example: 10 },
@@ -47,30 +51,40 @@ const options = {
           type: 'object',
           required: ['name', 'description', 'price', 'category', 'brand', 'quantity'],
           properties: {
-            name: { type: 'string' },
-            description: { type: 'string' },
-            price: { type: 'number' },
-            category: { type: 'string' },
-            brand: { type: 'string' },
-            quantity: { type: 'number' },
+            name: { type: 'string', example: 'Sample Product' },
+            description: { type: 'string', example: 'A sample product description' },
+            price: { type: 'number', example: 49.99 },
+            category: { 
+              type: 'string', 
+              example: 'Electronics',
+              enum: ['Electronics', 'Clothing', 'Books', 'Home', 'Sports', 'Other']
+            },
+            brand: { type: 'string', example: 'SampleBrand' },
+            quantity: { type: 'number', example: 10 },
             tags: {
               type: 'array',
-              items: { type: 'string' }
+              items: { type: 'string' },
+              example: ['tag1', 'tag2']
             }
           }
         },
         ProductUpdateInput: {
           type: 'object',
           properties: {
-            name: { type: 'string' },
-            description: { type: 'string' },
-            price: { type: 'number' },
-            category: { type: 'string' },
-            brand: { type: 'string' },
-            quantity: { type: 'number' },
+            name: { type: 'string', example: 'Sample Product' },
+            description: { type: 'string', example: 'A sample product description' },
+            price: { type: 'number', example: 49.99 },
+            category: { 
+              type: 'string', 
+              example: 'Electronics',
+              enum: ['Electronics', 'Clothing', 'Books', 'Home', 'Sports', 'Other']
+            },
+            brand: { type: 'string', example: 'SampleBrand' },
+            quantity: { type: 'number', example: 10 },
             tags: {
               type: 'array',
-              items: { type: 'string' }
+              items: { type: 'string' },
+              example: ['tag1', 'tag2']
             }
           }
         },
