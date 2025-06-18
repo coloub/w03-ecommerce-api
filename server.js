@@ -28,7 +28,7 @@ app.use(helmet({
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? [
-        'https://your-frontend-domain.com',
+        'https://crud-api-service-x1zu.onrender.com',
         /\.render\.com$/,
         /localhost/
       ]
