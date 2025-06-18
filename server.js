@@ -26,7 +26,7 @@ app.use(helmet({
   },
 }));
 
-// CORS configuration for production
+// CORS configuration for production 
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? [
