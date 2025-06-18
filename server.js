@@ -4,6 +4,8 @@ const helmet = require('helmet');
 require('dotenv').config();
 
 const connectDB = require('./config/database');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
 
 // Connect to database
 connectDB();
@@ -51,6 +53,9 @@ app.use((req, res, next) => {
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders', require('./routes/orders'));
 
+// Swagger UI route
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 const rateLimit = require('express-rate-limit');
 const authRoutes = require('./routes/auth');
 
@@ -77,7 +82,8 @@ app.get('/', (req, res) => {
     endpoints: {
       products: '/api/products',
       orders: '/api/orders',
-      health: '/health'
+      health: '/health',
+      swagger: '/api-docs'
     }
   });
 });
