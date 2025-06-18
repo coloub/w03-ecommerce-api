@@ -129,17 +129,17 @@ const options = {
           type: 'object',
           required: ['customerName', 'customerEmail', 'customerPhone', 'items', 'shippingAddress'],
           properties: {
-            customerName: { type: 'string' },
-            customerEmail: { type: 'string' },
-            customerPhone: { type: 'string' },
+            customerName: { type: 'string', example: 'John Doe', description: 'Name of the customer' },
+            customerEmail: { type: 'string', example: 'johndoe@example.com', description: 'Email address of the customer' },
+            customerPhone: { type: 'string', example: '+1-123-456-7890', description: 'Phone number of the customer' },
             items: {
               type: 'array',
               items: {
                 type: 'object',
                 required: ['productId', 'quantity'],
                 properties: {
-                  productId: { type: 'string' },
-                  quantity: { type: 'number' }
+                  productId: { type: 'string', example: '64bfa8b1234abc001234abcd', description: 'ID of the product' },
+                  quantity: { type: 'number', example: 3, description: 'Quantity of the product ordered' }
                 }
               }
             },
@@ -147,42 +147,52 @@ const options = {
               type: 'object',
               required: ['street', 'city', 'state', 'zipCode'],
               properties: {
-                street: { type: 'string' },
-                city: { type: 'string' },
-                state: { type: 'string' },
-                zipCode: { type: 'string' },
-                country: { type: 'string' }
+                street: { type: 'string', example: '123 Main St', description: 'Street address' },
+                city: { type: 'string', example: 'Anytown', description: 'City' },
+                state: { type: 'string', example: 'CA', description: 'State or province' },
+                zipCode: { type: 'string', example: '12345', description: 'Postal code' },
+                country: { type: 'string', example: 'USA', description: 'Country' }
               }
             },
-            status: { type: 'string', enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'] }
+            status: { 
+              type: 'string', 
+              enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'], 
+              example: 'pending',
+              description: 'Status of the order'
+            }
           }
         },
         OrderUpdateInput: {
           type: 'object',
           properties: {
-            customerName: { type: 'string' },
-            customerEmail: { type: 'string' },
-            customerPhone: { type: 'string' },
+            customerName: { type: 'string', example: 'John Doe', description: 'Name of the customer' },
+            customerEmail: { type: 'string', example: 'johndoe@example.com', description: 'Email address of the customer' },
+            customerPhone: { type: 'string', example: '+1-123-456-7890', description: 'Phone number of the customer' },
             items: {
               type: 'array',
               items: {
                 type: 'object',
                 properties: {
-                  productId: { type: 'string' },
-                  quantity: { type: 'number' }
+                  productId: { type: 'string', example: '64bfa8b1234abc001234abcd', description: 'ID of the product' },
+                  quantity: { type: 'number', example: 3, description: 'Quantity of the product ordered' }
                 }
               }
             },
             shippingAddress: {
               type: 'object',
               properties: {
-                street: { type: 'string' },
-                city: { type: 'string' },
-                state: { type: 'string' },
-                zipCode: { type: 'string' }
+                street: { type: 'string', example: '123 Main St', description: 'Street address' },
+                city: { type: 'string', example: 'Anytown', description: 'City' },
+                state: { type: 'string', example: 'CA', description: 'State or province' },
+                zipCode: { type: 'string', example: '12345', description: 'Postal code' }
               }
             },
-            status: { type: 'string', enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'] }
+            status: { 
+              type: 'string', 
+              enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'], 
+              example: 'pending',
+              description: 'Status of the order'
+            }
           }
         }
       }
